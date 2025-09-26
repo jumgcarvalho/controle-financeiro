@@ -1,7 +1,7 @@
 <template>
     <q-page padding>
         <div class="flex justify-end">
-            <q-card class="my-card bg-primary text-white q-mb-md flex text-center">
+            <q-card class="my-card bg-primary text-white q-mb-md flex text-center q-mr-md">
                 <q-card-section class="flex flex-start full-height">
                     <div class="text-h6">Total das despesas: R$ 200,00</div>
                 </q-card-section>
@@ -10,15 +10,14 @@
         
         <div class="q-pa-md">
             <q-table 
+                class="my-sticky-header-table"
                 title="Despesas Fixas" 
                 :rows="rows1"
                 :columns="columns1"
-                :loading="loading"
                 row-key="id"
-                virtual-scroll
-                :virtual-scroll-item-size="48"
-                :virtual-scroll-sticky-size-start="48"
-                @virtual-scroll="onScroll"
+                style="height: 300px"
+                :rows-per-page-options="[0]"
+                hide-pagination
             />
         </div>
 
@@ -28,6 +27,19 @@
                 :rows="rows1"
                 :columns="columns1"
                 row-key="id"
+                style="height: 300px"
+                :rows-per-page-options="[0]"
+                hide-pagination
+            />
+        </div>
+
+        <div class="flex justify-end q-mr-md q-mt-md">
+            <q-btn
+                class="q-py-md"
+                :key="`btn_size_rd_md`"
+                rounded
+                color="primary"
+                label="Adicionar nova despesa"
             />
         </div>
 
@@ -102,6 +114,24 @@ const rows1 = ref([
         valor: 200,
         categoria: 'Moradia'
     },
+    {
+        id: 6,
+        despesa: 'Energia',
+        valor: 200,
+        categoria: 'Moradia'
+    },
+    {
+        id: 6,
+        despesa: 'Energia',
+        valor: 200,
+        categoria: 'Moradia'
+    },
+    {
+        id: 6,
+        despesa: 'Energia',
+        valor: 200,
+        categoria: 'Moradia'
+    },
 ])
 
 </script>
@@ -113,5 +143,27 @@ const rows1 = ref([
     height: 60px;
 }
 
+.q-table {
+    max-height: 100px;
+}
+
+.my-sticky-header-table {
+    height: 310px;
+}
+
+.q-table__top,
+.q-table__bottom,
+thead tr:first-child th {
+    background-color: #C6C5B9;
+}
+
+thead tr th {
+    position: sticky;
+    z-index: 1;
+}
+
+thead tr:first-child th {
+    top: 0;
+}
 
 </style>

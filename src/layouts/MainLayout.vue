@@ -70,7 +70,9 @@
 
 <style lang="scss">
 
-
+:deep(.q-toolbar) {
+  background-color: #62929E;
+}
 
 
 </style>
