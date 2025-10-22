@@ -1,11 +1,15 @@
 <template>
     <q-page padding>
-        <div class="flex justify-end">
-            <q-card class="my-card bg-primary text-white q-mb-md flex text-center q-mr-md">
-                <q-card-section class="flex flex-start full-height">
-                    <div class="text-h6">Total das despesas: R$ 200,00</div>
-                </q-card-section>
-            </q-card>
+
+        <div class="flex justify-end q-mr-md q-mt-md">
+            <q-btn
+                class="q-py-md"
+                :key="`btn_size_rd_md`"
+                rounded
+                color="primary"
+                label="Adicionar nova despesa"
+                @click="abrirModal"
+            />
         </div>
         
         <div class="q-pa-md">
@@ -33,21 +37,29 @@
             />
         </div>
 
-        <div class="flex justify-end q-mr-md q-mt-md">
-            <q-btn
-                class="q-py-md"
-                :key="`btn_size_rd_md`"
-                rounded
-                color="primary"
-                label="Adicionar nova despesa"
-            />
+        <div class="flex justify-end">
+            <q-card class="my-card bg-primary text-white q-mb-md flex text-center q-mr-md">
+                <q-card-section class="flex flex-start full-height">
+                    <div class="text-h6">Total das despesas: R$ 200,00</div>
+                </q-card-section>
+            </q-card>
         </div>
+
+        <!-- modal -->
+        <ModalFormDespesa
+            v-model="modalAberto"
+            @add-despesa="adicionarDespesa"
+        />
 
     </q-page>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import ModalFormDespesa from 'src/components/ModalFormDespesa.vue';
+
+const modalAberto = ref(false);
+const abrirModal = () => modalAberto.value = true;
 
 const columns1 = ref([
     {
@@ -133,6 +145,7 @@ const rows1 = ref([
         categoria: 'Moradia'
     },
 ])
+
 
 </script>
 
