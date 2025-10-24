@@ -1,35 +1,54 @@
 <template>
-  <q-dialog v-model="isOpen" persistent>
-    <q-card style="min-width: 400px">
+
+    <q-card style="min-width: 700px">
       <q-card-section>
         <div class="text-h6">Adicionar nova despesa</div>
       </q-card-section>
 
-      <q-form @submit.prevent="handleSave" class="q-pa-md">
+      <q-form class="q-pa-md">
         <q-input
           v-model="form.despesa"
-          label="Despesa"
+          label="Descrição"
           outlined
           :rules="[val => !!val || 'Campo obrigatório']"
+          dense
         />
 
-        <q-input
-          v-model.number="form.valor"
-          label="Valor"
-          type="number"
-          prefix="R$"
-          outlined
-          :rules="[val => val > 0 || 'Digite um valor válido']"
-          class="q-mt-md"
-        />
+        <div class="row q-col-gutter-md">
+          <div class="col-4">
+            <q-input
+              v-model.number="form.valor"
+              label="Valor"
+              type="number"
+              prefix="R$"
+              outlined
+              :rules="[val => val > 0 || 'Digite um valor válido']"
+              dense
+            />
+          </div>
 
-        <q-input
-          v-model="form.categoria"
-          label="Categoria"
-          outlined
-          :rules="[val => !!val || 'Campo obrigatório']"
-          class="q-mt-md"
-        />
+          <div class="col-4">
+            <q-select
+              outlined
+              v-model="form.tipo"
+              label="Tipo"
+              :options="options"
+              dense
+            />
+          </div>
+
+          <div class="col-4">
+            <q-input
+              v-model="form.categoria"
+              label="Categoria"
+              outlined
+              :rules="[val => !!val || 'Campo obrigatório']"
+              dense
+            />
+          </div>
+        </div>
+
+        
 
         <q-input
           v-model="form.vencimento"
@@ -37,7 +56,8 @@
           type="date"
           outlined
           :rules="[val => !!val || 'Campo obrigatório']"
-          class="q-mt-md"
+          class="q-mt-sm"
+          dense
         />
 
         <div class="q-gutter-sm q-mt-md flex justify-end">
@@ -46,41 +66,26 @@
         </div>
       </q-form>
     </q-card>
-  </q-dialog>
+  
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, watch } from 'vue';
-
-const props = defineProps({
-  modelValue: { type: Boolean, default: false }
-});
-
-const emit = defineEmits(['update:modelValue', 'add-despesa']);
-
-const isOpen = ref(props.modelValue);
-
-watch(() => props.modelValue, (val) => {
-  isOpen.value = val;
-});
-
-watch(isOpen, (val) => {
-  emit('update:modelValue', val);
-});
+import { ref } from 'vue';
 
 const form = ref({
   despesa: '',
   valor: '',
+  tipo: '',
   categoria: '',
   vencimento: ''
 });
 
-function handleSave() {
-  // validação manual extra (caso queira garantir)
-  if (!form.value.despesa || !form.value.valor) return;
+const options = ["FIXA", "VARIÁVEL"]
 
-  emit('add-despesa', { ...form.value });
-  form.value = { despesa: '', valor: '', categoria: '', vencimento: '' };
-  isOpen.value = false;
-}
 </script>
+
+<style scoped>
+
+
+
+</style>

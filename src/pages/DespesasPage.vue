@@ -8,10 +8,10 @@
                 rounded
                 color="primary"
                 label="Adicionar nova despesa"
-                @click="abrirModal"
+                @click="abrirModal" 
             />
         </div>
-        
+        <!-- @click="abrirModal" chama uma função abrirModal ao ser clicado -->
         <div class="q-pa-md">
             <q-table 
                 class="my-sticky-header-table"
@@ -45,11 +45,15 @@
             </q-card>
         </div>
 
-        <!-- modal -->
+        <!-- modal 
         <ModalFormDespesa
             v-model="modalAberto"
             @add-despesa="adicionarDespesa"
         />
+        -->
+        <q-dialog v-model="modalAberto" persistent>
+            <ModalFormDespesa/>
+        </q-dialog>
 
     </q-page>
 </template>
@@ -59,7 +63,9 @@ import { ref } from 'vue';
 import ModalFormDespesa from 'src/components/ModalFormDespesa.vue';
 
 const modalAberto = ref(false);
+//modalAberto é enviada como props para o componente de despesas
 const abrirModal = () => modalAberto.value = true;
+//abrirModal, quando chamada, muda o valor de modalAberto para true
 
 const columns1 = ref([
     {
