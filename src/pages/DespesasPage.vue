@@ -155,7 +155,7 @@ const rows1 = ref([
 
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 
 .my-card {
     width: max-content;
@@ -175,6 +175,7 @@ const rows1 = ref([
 thead tr:first-child th {
     background-color: #C6C5B9;
 }
+
 
 thead tr th {
     position: sticky;
