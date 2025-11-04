@@ -1,189 +1,173 @@
 <template>
-    <q-page padding>
+  <q-page padding>
+    <div class="flex justify-end q-mr-md q-mt-md">
+      <q-btn
+        class="q-py-md"
+        :key="`btn_size_rd_md`"
+        rounded
+        color="primary"
+        label="Adicionar nova despesa"
+        @click="abrirModal"
+      />
+    </div>
+    <!-- @click="abrirModal" chama uma função abrirModal ao ser clicado -->
+    <div class="q-pa-md">
+      <q-table
+        class="my-sticky-header-table"
+        title="Despesas Fixas"
+        :rows="despesasFixas"
+        :columns="columns1"
+        row-key="id"
+        style="height: 300px"
+        :rows-per-page-options="[0]"
+        hide-pagination
+      />
+      <!-- <pre>{{ despesasVariaveis }}</pre>  -->
+    </div>
 
-        <div class="flex justify-end q-mr-md q-mt-md">
-            <q-btn
-                class="q-py-md"
-                :key="`btn_size_rd_md`"
-                rounded
-                color="primary"
-                label="Adicionar nova despesa"
-                @click="abrirModal" 
-            />
-        </div>
-        <!-- @click="abrirModal" chama uma função abrirModal ao ser clicado -->
-        <div class="q-pa-md">
-            <q-table 
-                class="my-sticky-header-table"
-                title="Despesas Fixas" 
-                :rows="rows1"
-                :columns="columns1"
-                row-key="id"
-                style="height: 300px"
-                :rows-per-page-options="[0]"
-                hide-pagination
-            />
-        </div>
+    <div class="q-pa-md">
+      <q-table
+        title="Despesas Variáveis"
+        :rows="despesasVariaveis"
+        :columns="columns1"
+        row-key="id"
+        style="height: 300px"
+        :rows-per-page-options="[0]"
+        hide-pagination
+      />
+    </div>
 
-        <div class="q-pa-md">
-            <q-table 
-                title="Despesas Variáveis" 
-                :rows="rows1"
-                :columns="columns1"
-                row-key="id"
-                style="height: 300px"
-                :rows-per-page-options="[0]"
-                hide-pagination
-            />
-        </div>
+    <div class="flex justify-end">
+      <q-card class="my-card bg-primary text-white q-mb-md flex text-center q-mr-md">
+        <q-card-section class="flex flex-start full-height">
+          <div class="text-h6">Total das despesas: R$ 200,00</div>
+        </q-card-section>
+      </q-card>
+    </div>
 
-        <div class="flex justify-end">
-            <q-card class="my-card bg-primary text-white q-mb-md flex text-center q-mr-md">
-                <q-card-section class="flex flex-start full-height">
-                    <div class="text-h6">Total das despesas: R$ 200,00</div>
-                </q-card-section>
-            </q-card>
-        </div>
+    <q-page class="flex flex-center">
+      <div class="q-pa-md column items-center">
+        <h2>Counter Test</h2>
 
-        <!-- modal 
+        <p class="text-h5 q-my-md">Count: {{ counter.count }}</p>
+        <p>Double: {{ counter.doubleCount }}</p>
+
+        <div class="row q-gutter-sm">
+          <q-btn label="-" color="negative" @click="counter.decrement" />
+          <q-btn label="+" color="primary" @click="counter.increment" />
+          <q-btn label="Reset" color="grey" @click="counter.reset" />
+        </div>
+      </div>
+    </q-page>
+
+    <!-- modal 
         <ModalFormDespesa
             v-model="modalAberto"
             @add-despesa="adicionarDespesa"
         />
         -->
-        <q-dialog v-model="modalAberto" persistent>
-            <ModalFormDespesa/>
-        </q-dialog>
-
-    </q-page>
+    <q-dialog v-model="modalAberto" persistent>
+      <ModalFormDespesa @addDespesa="cadastrarDespesaTeste" />
+    </q-dialog>
+  </q-page>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import ModalFormDespesa from 'src/components/ModalFormDespesa.vue';
+import { onMounted, ref } from 'vue'
+import ModalFormDespesa from 'src/components/ModalFormDespesa.vue'
+import { useCounterStore } from '../stores/counter-store'
+import { useDespesasStore } from '../stores/despesas-store'
 
-const modalAberto = ref(false);
-//modalAberto é enviada como props para o componente de despesas
-const abrirModal = () => modalAberto.value = true;
-//abrirModal, quando chamada, muda o valor de modalAberto para true
+const counter = useCounterStore()
+const modalAberto = ref(false)
+const despesasFixas = ref([])
+const despesasVariaveis = ref([])
+
+const { getDespesas, cadastrarDespesa } = useDespesasStore()
+
+const abrirModal = () => (modalAberto.value = true)
+
+onMounted(async () => {
+  try {
+    await buscarDespesas()
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+async function buscarDespesas() {
+  const resposta = await getDespesas()
+  despesasFixas.value = resposta.despesasFixas
+  despesasVariaveis.value = resposta.despesasVariaveis
+}
 
 const columns1 = ref([
-    {
-        name: 'despesa',
-        label: 'Despesa',
-        field: 'despesa',
-        align: 'left',
-    },
-    {
-        name: 'valor',
-        label: 'Valor',
-        field: 'valor',
-        align: 'left',
-    },
-    {
-        name: 'categoria',
-        label: 'Categoria',
-        field: 'categoria',
-        align: 'left',
-    },
-    {
-        name: 'vencimento',
-        label: 'Vencimento',
-        field: 'vencimento',
-        align: 'left',
-    },
+  {
+    name: 'despesa',
+    label: 'Despesa',
+    field: 'description',
+    align: 'left',
+  },
+  {
+    name: 'valor',
+    label: 'Valor',
+    field: 'amount',
+    align: 'left',
+  },
+  {
+    name: 'categoria',
+    label: 'Categoria',
+    field: 'category',
+    align: 'left',
+  },
+  {
+    name: 'vencimento',
+    label: 'Vencimento',
+    field: (row) => formateDate(row.dueDate),
+    align: 'left',
+  },
 ])
 
-const rows1 = ref([
-    {
-        id: 1,
-        despesa: 'Aluguel',
-        valor: 200,
-        categoria: 'Moradia',
-        vencimento: '26/10/2025'
-    },
-    {
-        id: 2,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-    {
-        id: 3,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-    {
-        id: 4,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-    {
-        id: 5,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-    {
-        id: 6,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-    {
-        id: 6,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-    {
-        id: 6,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-    {
-        id: 6,
-        despesa: 'Energia',
-        valor: 200,
-        categoria: 'Moradia'
-    },
-])
+function formateDate(dataDespesa) {
+  if (!dataDespesa) return ''
+  const data = new Date(dataDespesa)
+  const dia = String(data.getDate()).padStart(2, '0')
+  const mes = String(data.getMonth() + 1).padStart(2, '0')
+  const ano = data.getFullYear()
+  return `${dia}/${mes}/${ano}`
+}
 
-
+async function cadastrarDespesaTeste(despesa) {
+    cadastrarDespesa(despesa)
+}
 </script>
 
 <style scoped lang="scss">
-
 .my-card {
-    width: max-content;
-    height: 60px;
+  width: max-content;
+  height: 60px;
 }
 
 .q-table {
-    max-height: 100px;
+  max-height: 100px;
 }
 
 .my-sticky-header-table {
-    height: 310px;
+  height: 310px;
 }
 
 .q-table__top,
 .q-table__bottom,
 thead tr:first-child th {
-    background-color: #C6C5B9;
+  background-color: #c6c5b9;
 }
 
-
 thead tr th {
-    position: sticky;
-    z-index: 1;
+  position: sticky;
+  z-index: 1;
 }
 
 thead tr:first-child th {
-    top: 0;
+  top: 0;
 }
-
 </style>
