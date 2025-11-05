@@ -138,7 +138,15 @@ function formateDate(dataDespesa) {
 }
 
 async function cadastrarDespesaTeste(despesa) {
-    cadastrarDespesa(despesa)
+  try {
+    await cadastrarDespesa(despesa)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    modalAberto.value = false
+    await buscarDespesas()
+  }
+    
 }
 </script>
 

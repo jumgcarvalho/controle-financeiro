@@ -14,7 +14,7 @@
       />
 
       <div class="row q-col-gutter-md">
-        <div class="col-4">
+        <div class="col-3">
           <q-input
             v-model.number="form.amount"
             label="Valor"
@@ -30,15 +30,21 @@
           <q-select outlined v-model="form.expenseType" label="Tipo" :options="options" dense />
         </div>
 
-        <div class="col-4">
-          <q-input
+        <div class="flex col-5">
+            <q-input
             v-model="form.category"
             label="Categoria"
             outlined
             :rules="[(val) => !!val || 'Campo obrigatório']"
             dense
-          />
+            class="input-category"
+            />
+            <button 
+            class="addCategory"
+            @click="abrirModal"
+            >+</button>
         </div>
+        
       </div>
 
       <q-input
@@ -56,11 +62,20 @@
         <q-btn label="Salvar" color="primary" type="submit" />
       </div>
     </q-form>
+
+    <q-dialog v-model="modalAberto">
+      <ModalFormCategoria />
+    </q-dialog>
+
   </q-card>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import ModalFormCategoria from './categoria/ModalFormCategoria.vue'
+const modalAberto = ref(false)
+
+const abrirModal = () => (modalAberto.value = true)
 
 const form = ref({
   description: '',
@@ -84,6 +99,26 @@ function enviarDespesas() {
   }
   emit('addDespesa', payload)
 }
+
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+
+.addCategory {
+  width: 40px;
+  height: 40px;
+  background-color: $primary;
+  color: white;
+  margin-left: 5px;
+  border-radius: 4px;
+  padding-right: 2px;
+  margin-left: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.input-category {
+  width: 214px;
+}
+
+</style>
