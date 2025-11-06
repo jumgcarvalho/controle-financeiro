@@ -15,15 +15,19 @@
         <q-input
         outlined
         label="Cor"
-        v-model="color"
+        v-model="form.color"
+        class="q-mb-md"
         >
+
+          <template v-slot:prepend>
+            <div
+              class="color-preview"
+              :style="{ backgroundColor: form.color || '#ccc' }"
+            ></div>
+          </template>
+
           <template v-slot:append>
             <div class="espacamento flex">
-              <div
-              class="color-preview"
-              :style="{ backgroundColor: form.color || '#ccc'}"
-              ></div>
-
               <q-icon name="colorize" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-color v-model="form.color" no-header no-footer />
@@ -32,6 +36,40 @@
             </div>
           </template>
         </q-input>
+
+        <q-select
+        outlined
+        label="Ícone"
+        v-model="form.icon"
+        :options="availableIcons"
+        option-value="value"
+        option-label="label"
+        emit-value
+        map-options
+        >
+
+        <template v-slot:prepend>
+          <q-icon v-if="form.icon" :name="`ti-${form.icon.toLowerCase()}`" tag="i"></q-icon>
+        </template>
+
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section avatar>
+              <q-icon :name="`ti-${scope.opt.value}`" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ scope.opt.label }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+
+
+        </q-select>
+
+        <pre>
+          {{ form.icon }}
+        </pre>
+
       </div>
     </q-form>
 
@@ -46,7 +84,22 @@ import { ref } from 'vue'
     color: '',
     icon: '',
   })
-  const color = ref('')
+
+  const availableIcons = [
+  { label: 'Wallet', value: 'wallet' },
+  { label: 'Support', value: 'support' },
+  { label: 'Shopping Cart Full', value: 'shopping-cart-full' },
+  { label: 'Car', value: 'car' },
+  { label: 'Home', value: 'home' },
+  { label: 'Heart', value: 'heart' },
+  { label: 'Gift', value: 'gift' },
+  { label: 'Game', value: 'game' },
+  { label: 'Wand', value: 'wand' },
+  { label: 'Face Smile', value: 'face-smile' },
+  { label: 'Book', value: 'book' },
+  { label: 'Tag', value: 'tag'}
+  ]
+
 </script>
 
 <style scoped>
