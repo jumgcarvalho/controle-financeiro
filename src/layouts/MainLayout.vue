@@ -63,6 +63,11 @@
     title: 'Perfil',
     icon: 'ti-user',
     link: '/perfil'
+  },
+  {
+    title: 'Categorias',
+    icon: 'ti-agenda',
+    link: '/categorias'
   }
 ]
 

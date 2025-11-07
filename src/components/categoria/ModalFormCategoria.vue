@@ -66,9 +66,10 @@
 
         </q-select>
 
-        <pre>
-          {{ form.icon }}
-        </pre>
+        <div class="q-gutter-sm q-mt-md flex justify-end">
+          <q-btn flat label="Cancelar" color="negative" v-close-popup />
+          <q-btn label="Salvar" color="primary" type="submit" />
+        </div>
 
       </div>
     </q-form>
