@@ -4,12 +4,14 @@
       <div class="text-h6">Adicionar nova categoria</div>
     </q-card-section>
 
-    <q-form class="q-pa-md">
+    <q-form class="q-pa-md" @submit="enviarCategorias">
       <div class="col">
         <q-input
+        v-model="form.name"
         outlined
         label="Nome"
-        class="q-mb-md" 
+        class="q-mb-md"
+        :rules="[(val) => !!val || 'Campo obrigatório']" 
         />
 
         <q-input
@@ -17,6 +19,7 @@
         label="Cor"
         v-model="form.color"
         class="q-mb-md"
+        :rules="[(val) => !!val || 'Campo obrigatório']"
         >
 
           <template v-slot:prepend>
@@ -46,6 +49,7 @@
         option-label="label"
         emit-value
         map-options
+        :rules="[(val) => !!val || 'Campo obrigatório']"
         >
 
         <template v-slot:prepend>
@@ -85,6 +89,18 @@ import { ref } from 'vue'
     color: '',
     icon: '',
   })
+
+  const emit = defineEmits(['addCategoria'])
+
+  function enviarCategorias() {
+    const payload = {
+      name: form.value.name,
+      color: form.value.color,
+      icon: form.value.icon
+    }
+    emit('addCategoria', payload)
+  }
+
 
   const availableIcons = [
   { label: 'Wallet', value: 'wallet' },

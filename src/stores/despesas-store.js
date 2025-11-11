@@ -15,7 +15,7 @@ export const useDespesasStore = defineStore('despesas', () => {
       return data
     } catch (error) {
       console.log('Erro ao buscar despesas:', error)
-      $q.notify({
+      $q.notify({ 
         type: 'negative',
         message: 'Erro ao buscar despesas. Tente novamente mais tarde.',
       })

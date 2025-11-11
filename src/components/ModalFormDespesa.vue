@@ -63,8 +63,8 @@
       </div>
     </q-form>
 
-    <q-dialog v-model="modalAberto">
-      <ModalFormCategoria />
+    <q-dialog v-model="modalAberto" persistent>
+      <ModalFormCategoria @addCategoria="cadastrarCategoria2"/>
     </q-dialog>
 
   </q-card>
@@ -72,8 +72,12 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useCategoriasStore } from '../stores/categorias-store'
 import ModalFormCategoria from './categoria/ModalFormCategoria.vue'
+
 const modalAberto = ref(false)
+
+const { cadastrarCategoria} = useCategoriasStore()
 
 const abrirModal = () => (modalAberto.value = true)
 
@@ -98,6 +102,18 @@ function enviarDespesas() {
     dueDate: new Date(form.value.dueDate).toISOString(),
   }
   emit('addDespesa', payload)
+}
+
+async function cadastrarCategoria2(categoria) {
+  try {
+    await cadastrarCategoria(categoria)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    modalAberto.value = false
+    //await buscarCategorias()
+  }
+    
 }
 
 </script>
