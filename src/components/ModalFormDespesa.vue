@@ -31,18 +31,23 @@
         </div>
 
         <div class="flex col-5">
-            <q-input
-            v-model="form.category"
+          <q-select
+            v-model="form.categoryId"
             label="Categoria"
             outlined
             :rules="[(val) => !!val || 'Campo obrigatório']"
             dense
             class="input-category"
-            />
-            <button 
-            class="addCategory"
-            @click="abrirModal"
-            >+</button>
+            :options="categoriasBack"
+            option-label="name"
+            option-value="id"
+            map-options
+            emit-value 
+          />
+          <button 
+          class="addCategory"
+          @click="abrirModal"
+          >+</button>
         </div>
         
       </div>
@@ -71,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useCategoriasStore } from '../stores/categorias-store'
 import ModalFormCategoria from './categoria/ModalFormCategoria.vue'
 
@@ -85,7 +90,7 @@ const form = ref({
   description: '',
   amount: '',
   expenseType: '',
-  category: '',
+  categoryId: '',
   dueDate: '',
 })
 
@@ -93,12 +98,30 @@ const options = ['FIXED', 'VARIABLE']
 
 const emit = defineEmits(['addDespesa'])
 
+const categoriasBack = ref([])
+
+const { getCategorias } = useCategoriasStore()
+
+onMounted(async () => {
+  try {
+    await buscarCategorias()
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+async function buscarCategorias() {
+  categoriasBack.value = await getCategorias()
+}
+
 function enviarDespesas() {
+console.log('Form antes de enviar:', form.value)
+
   const payload = {
     description: form.value.description,
     amount: Number(form.value.amount),
     expenseType: form.value.expenseType,
-    category: form.value.category,
+    categoryId: form.value.categoryId,
     dueDate: new Date(form.value.dueDate).toISOString(),
   }
   emit('addDespesa', payload)

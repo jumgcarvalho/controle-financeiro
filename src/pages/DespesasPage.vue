@@ -60,12 +60,6 @@
       </div>
     </q-page>
 
-    <!-- modal 
-        <ModalFormDespesa
-            v-model="modalAberto"
-            @add-despesa="adicionarDespesa"
-        />
-        -->
     <q-dialog v-model="modalAberto" persistent>
       <ModalFormDespesa @addDespesa="cadastrarDespesaTeste" />
     </q-dialog>
