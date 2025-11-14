@@ -18,23 +18,35 @@
         :rows="despesasFixas"
         :columns="columns1"
         row-key="id"
-        style="height: 300px"
         :rows-per-page-options="[0]"
         hide-pagination
       />
-      <!-- <pre>{{ despesasVariaveis }}</pre>  -->
+      <!-- <pre>{{ despesasVariaveis }}</pre> -->
     </div>
 
     <div class="q-pa-md">
       <q-table
+        class="my-sticky-header-table"
         title="Despesas Variáveis"
         :rows="despesasVariaveis"
         :columns="columns1"
         row-key="id"
-        style="height: 300px"
         :rows-per-page-options="[0]"
         hide-pagination
-      />
+      >
+        <template v-slot:body-cell-categoria="props">
+          <q-td :props="props">
+            <div v-if="props.row.category">
+              <q-icon
+                :style="`color:${props.row.category?.color}`"
+                :name="'ti-' + props.row.category?.icon"
+              ></q-icon>
+              <span class="q-ml-sm">{{ props.row.category?.name }}</span>
+            </div>
+            <div></div>
+          </q-td>
+        </template>
+      </q-table>
     </div>
 
     <div class="flex justify-end">
@@ -101,18 +113,21 @@ const columns1 = ref([
     label: 'Despesa',
     field: 'description',
     align: 'left',
+    style: 'width: 500px',
   },
   {
     name: 'valor',
     label: 'Valor',
     field: 'amount',
     align: 'left',
+    style: 'width: 300px',
   },
   {
     name: 'categoria',
     label: 'Categoria',
     field: 'category',
     align: 'left',
+    style: 'width: 300px',
   },
   {
     name: 'vencimento',
@@ -140,7 +155,6 @@ async function cadastrarDespesaTeste(despesa) {
     modalAberto.value = false
     await buscarDespesas()
   }
-    
 }
 </script>
 
@@ -150,26 +164,30 @@ async function cadastrarDespesaTeste(despesa) {
   height: 60px;
 }
 
-.q-table {
-  max-height: 100px;
+/* aplica o scroll ao contêiner interno da q-table */
+.my-sticky-header-table ::v-deep(.q-table__middle),
+.my-sticky-header-table ::v-deep(.q-table__container) {
+  max-height: 310px; /* altura da tabela com scroll */
+  overflow-y: auto; /* scroll interno */
 }
 
-.my-sticky-header-table {
-  height: 310px;
-}
-
-.q-table__top,
-.q-table__bottom,
-thead tr:first-child th {
+/* fixa o thead dentro do contêiner rolável */
+.my-sticky-header-table ::v-deep(thead th) {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   background-color: #c6c5b9;
 }
 
-thead tr th {
-  position: sticky;
-  z-index: 1;
+/* garante que não exista regra global atrapalhando */
+.my-sticky-header-table ::v-deep(thead) {
+  display: table-header-group;
 }
 
-thead tr:first-child th {
+.my-sticky-header-table ::v-deep(.q-table__top) {
+  position: sticky;
   top: 0;
+  z-index: 10;
+  background-color: #c6c5b9;
 }
 </style>
