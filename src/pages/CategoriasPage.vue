@@ -6,7 +6,8 @@
         :key="`btn_size_rd_md`"
         rounded
         color="primary"
-        label="Adicionar nova categoria"
+        icon="ti-plus"
+        label="Nova Categoria"
         @click="abrirModal"
       />
     </div>
@@ -17,10 +18,30 @@
         :columns="columns"
         :rows="categorias"
         row-key="id"
-        style="height: 300px"
+        style="height: 400px"
         :rows-per-page-options="[0]"
         hide-pagination
-      />
+      >
+      <template v-slot:body-cell-icone="props">
+          <q-td :props="props">
+            <div v-if="props.row.icon">
+              <q-icon
+                :name="'ti-' + props.row.icon"
+              ></q-icon>
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-cor="props">
+          <q-td :props="props">
+            <div v-if="props.row.color">
+              <div 
+                class="circulo-cor"
+                :style="`background-color:${props.row.color}`"
+              ></div>
+            </div>
+          </q-td>
+        </template>
+      </q-table>
     </div>
 
     <q-dialog v-model="modalAberto" persistent>
@@ -87,3 +108,14 @@ async function cadastrarCategoria2(categoria) {
 }
 
 </script>
+
+<style scoped>
+
+.circulo-cor {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  display: inline-block;
+}
+
+</style>

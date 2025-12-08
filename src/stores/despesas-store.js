@@ -31,48 +31,41 @@ export const useDespesasStore = defineStore('despesas', () => {
     try {
       console.log("Dados sendo enviados:", payload);
       await api.post(`/expenses`, payload)
+      $q.notify({
+        type: 'positive',
+        message: 'Despesa cadastrada com sucesso!'
+      })
     } catch (error) {
       console.log('Error ao cadastrar despesa', error)
     }
   }
 
-  return { getDespesas, cadastrarDespesa }
+  async function editarDespesa(despesa) {
+    try {
+      await api.patch(`/expenses/${despesa.id}`, despesa)
+      $q.notify({
+        type: 'positive',
+        message: 'Despesa editada com sucesso!'
+      })
+    } catch (error) {
+      console.log('Error ao editar despesa', error)
+    }
+  }
+
+  async function deletarDespesa(id) {
+    console.log(id)
+    try {
+      await api.delete(`/expenses/${id}`)
+      $q.notify({
+        type: 'positive',
+        message: 'Despesa excluída com sucesso!'
+      })
+    } catch (error) {
+      console.log('Error ao excluir despesa', error)
+    }
+  }
+
+  return { getDespesas, cadastrarDespesa, deletarDespesa, editarDespesa }
 })
 
-// export const useDespesasStore = defineStore('despesas', {
-// state: () => ({
-//   despesasFixas: [],
-//   despesasVariaveis: [],
-//   loading: false,
-//   err: null,
-// }),
-// actions: {
-//   async getDespesas() {
-//     this.loading = true
-//     try {
-//       const { data } = await api.get('/expenses')
-//       console.log(data)
-//       this.despesasFixas = data.despesasFixas
-//       this.despesasVariaveis = data.despesasVariaveis
-//       return data
-//     } catch (error) {
-//       this.err = error
-//     } finally {
-//       this.loading = false
-//     }
-//   },
-//   // async getUmaDespesa() {
-//   //   try {
-//   //     return this.despesas.filter((despesa) => {
-//   //       // if(despesa.id == data?.id) {
-//   //       //   return despesa
-//   //       // }
-//   //     })
-//   //   } catch (error) {
-//   //     this.err = error
-//   //   } finally {
-//   //     this.loading = false
-//   //   }
-//   // },
-// },
-// })
+
