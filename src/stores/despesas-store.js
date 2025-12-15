@@ -5,12 +5,12 @@ import { useQuasar } from 'quasar'
 export const useDespesasStore = defineStore('despesas', () => {
   const $q = useQuasar()
 
-  async function getDespesas() {
+  async function getDespesas(id) {
     $q.loading.show({
       message: 'Carregando despesas...',
     })
     try {
-      const { data } = await api.get('/expenses')
+      const { data } = await api.get(`/expenses/${id}/all`)
       $q.loading.hide()
       return data
     } catch (error) {
@@ -22,10 +22,11 @@ export const useDespesasStore = defineStore('despesas', () => {
     }
   }
 
-  async function cadastrarDespesa(despesa) {
+  async function cadastrarDespesa(despesa, userId) {
     const payload = {
       ...despesa,
-      expenseStatus: 'PENDING'
+      expenseStatus: 'PENDING',
+      userId: userId
     }
 
     try {

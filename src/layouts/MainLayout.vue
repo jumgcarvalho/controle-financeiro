@@ -30,7 +30,7 @@
         </q-item>
 
         <q-item class="absolute-bottom">
-          <q-btn label="Sair" icon="logout" @click="logout" />
+          <q-btn label="Sair" icon="logout" @click="doLogout" color="negative"/>
         </q-item>
       </q-list>
     </q-drawer>
@@ -45,16 +45,19 @@
 import { Notify } from 'quasar'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const leftDrawerOpen = ref(false)
+
+const { logout } = useAuthStore()
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
-function logout() {
-  localStorage.removeItem('token')
+function doLogout() {
+  logout()
   router.push('/auth')
   Notify.create({
     message: 'Logout realizado com sucesso',

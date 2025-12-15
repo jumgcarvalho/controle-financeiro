@@ -5,6 +5,7 @@ import { Notify } from 'quasar'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('token') || null,
+    userId: localStorage.getItem('userId') || null,
     error: null,
   }),
 
@@ -15,7 +16,9 @@ export const useAuthStore = defineStore('auth', {
       try {
         const { data: dataLogin } = await api.post('/auth/login', { email, password })
         this.token = dataLogin.access_token
+        this.userId = dataLogin.userId
         localStorage.setItem('token', dataLogin.access_token)
+        localStorage.setItem('userId', dataLogin.userId)
         return dataLogin.access_token
       } catch (err) {
         this.error = err.response?.data?.message || err.message || 'Erro desconhecido'
@@ -44,6 +47,13 @@ export const useAuthStore = defineStore('auth', {
           position: 'bottom',
         })
       }
+    },
+
+    async logout() {
+      this.token = null
+      localStorage.removeItem('token')
+      this.userId = null
+      localStorage.removeItem('userId')
     },
   },
 })

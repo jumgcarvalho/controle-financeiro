@@ -1,10 +1,12 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="q-pa-md column items-center">
-      <h1>Aqui ficarão os gráficos</h1>
-    </div>
+  <q-page padding>
+    <q-card class="q-pa-md" style="display: inline-block;">
+      <DoughnutChart/>
+    </q-card>
   </q-page>
 </template>
 
 <script setup>
+import DoughnutChart from '../components/DoughnutChart.vue';
+
 </script>

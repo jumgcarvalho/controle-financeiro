@@ -33,5 +33,23 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
 
+  Router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('token')
+    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+
+    if(requiresAuth && !token) {
+      return next('/auth')
+    }
+
+    const getRole = localStorage.getItem('role')
+    const userAuthorized = to.matched.some((record) => record.meta.userAuthorized)
+
+    if(userAuthorized && getRole !== 'ADMIN') {
+      return next('/')
+    }
+
+    next()
+  })
+
   return Router
 })

@@ -136,6 +136,7 @@ import ModalFormDespesa from 'src/components/ModalFormDespesa.vue'
 import { useDespesasStore } from '../stores/despesas-store'
 import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog.vue'
 import ModalEditarDespesa from '../components/ModalEditarDespesa.vue'
+import { useAuthStore } from '../stores/auth'
 
 const modalAberto = ref(false)
 const despesasFixas = ref([])
@@ -145,20 +146,23 @@ const editDialogAberto = ref(false)
 const totalDespesas = ref()
 
 const { getDespesas, cadastrarDespesa, deletarDespesa, editarDespesa } = useDespesasStore()
+const { userId } = useAuthStore()
 
 const abrirModal = () => (modalAberto.value = true)
 
 onMounted(async () => {
   try {
-    await buscarDespesas()
+    console.log("userId: " + userId)
+    await buscarDespesas(userId)
     totalDespesas.value = await getTotalDespesas()
   } catch (error) {
     console.error(error)
   }
 })
 
-async function buscarDespesas() {
-  const resposta = await getDespesas()
+async function buscarDespesas(id) {
+  const resposta = await getDespesas(id)
+  console.log(resposta)
   despesasFixas.value = resposta.despesasFixas
   despesasVariaveis.value = resposta.despesasVariaveis
 }
@@ -232,12 +236,12 @@ function formateDate(dataDespesa) {
 
 async function cadastrarDespesaTeste(despesa) {
   try {
-    await cadastrarDespesa(despesa)
+    await cadastrarDespesa(despesa, userId)
   } catch (error) {
     console.log(error)
   } finally {
     modalAberto.value = false
-    await buscarDespesas()
+    await buscarDespesas(userId)
     totalDespesas.value = await getTotalDespesas()
   }
 }
@@ -282,7 +286,7 @@ async function editarDespesa1(despesa) {
 
 async function apagarDespesa(despesa) {
   await deletarDespesa(despesa.id)
-  await buscarDespesas()
+  await buscarDespesas(userId)
   totalDespesas.value = await getTotalDespesas()
   deleteDialogAberto.value = false
   infoDespesa.value = null
@@ -290,7 +294,7 @@ async function apagarDespesa(despesa) {
 
 async function editarDespesa2(despesa) {
   await editarDespesa(despesa)
-  await buscarDespesas()
+  await buscarDespesas(userId)
   totalDespesas.value = await getTotalDespesas()
   editDialogAberto.value = false
 }
