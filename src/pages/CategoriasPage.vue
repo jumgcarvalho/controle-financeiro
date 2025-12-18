@@ -14,11 +14,11 @@
 
     <div class="q-pa-md">
       <q-table
+        class="my-sticky-header-table"
         title="Categorias"
         :columns="columns"
         :rows="categorias"
         row-key="id"
-        style="height: 400px"
         :rows-per-page-options="[0]"
         hide-pagination
       >
@@ -54,21 +54,23 @@
 import { onMounted, ref } from 'vue';
 import { useCategoriasStore } from '../stores/categorias-store';
 import ModalFormCategoria from '../components/categoria/ModalFormCategoria.vue';
+import { useAuthStore } from '../stores/auth';
 
 const categorias = ref([])
 
 const { getCategorias, cadastrarCategoria } = useCategoriasStore()
+const { userId } = useAuthStore()
 
 onMounted(async () => {
   try {
-    await buscarCategorias()
+    await buscarCategorias(userId)
   } catch (error) {
     console.error(error)
   }
 })
 
-async function buscarCategorias() {
-  categorias.value = await getCategorias()
+async function buscarCategorias(userId) {
+  categorias.value = await getCategorias(userId)
 }
 
 const modalAberto = ref(false)
@@ -98,7 +100,7 @@ const columns = ref([
 
 async function cadastrarCategoria2(categoria) {
   try {
-    await cadastrarCategoria(categoria)
+    await cadastrarCategoria(categoria, userId)
   } catch (error) {
     console.log(error)
   } finally {
@@ -109,13 +111,37 @@ async function cadastrarCategoria2(categoria) {
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 .circulo-cor {
   width: 20px;
   height: 20px;
   border-radius: 100%;
   display: inline-block;
+}
+.my-sticky-header-table ::v-deep(.q-table__middle),
+.my-sticky-header-table ::v-deep(.q-table__container) {
+  max-height: 310px; /* altura da tabela com scroll */
+  overflow-y: auto; /* scroll interno */
+}
+
+.my-sticky-header-table ::v-deep(thead th) {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color:$secondary;
+}
+
+/* garante que não exista regra global atrapalhando */
+.my-sticky-header-table ::v-deep(thead) {
+  display: table-header-group;
+}
+
+.my-sticky-header-table ::v-deep(.q-table__top) {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: $secondary;
 }
 
 </style>

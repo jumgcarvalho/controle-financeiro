@@ -29,9 +29,42 @@
           </q-item-section>
         </q-item>
 
-        <q-item class="absolute-bottom">
-          <q-btn label="Sair" icon="logout" @click="doLogout" color="negative"/>
+        <q-item>
+          <q-btn
+            label="Sair"
+            icon="logout"
+            @click="doLogout"
+            color="negative"
+            style="width: 100px"
+            class="q-mt-md"
+          />
         </q-item>
+
+        <div class="absolute-bottom">
+          <q-separator />
+          <q-item clickable v-ripple>
+            <q-item-section avatar>
+              <q-avatar color="primary" text-color="white">
+                {{
+                  userName
+                    ?.split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .slice(0, 2)
+                }}
+              </q-avatar>
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label class="text-weight-medium">{{userName}}</q-item-label>
+              <q-item-label caption>Meu Perfil</q-item-label>
+            </q-item-section>
+
+            <q-item-section side>
+              <q-btn flat round dense icon="more_vert" />
+            </q-item-section>
+          </q-item>
+        </div>
       </q-list>
     </q-drawer>
 
@@ -43,18 +76,27 @@
 
 <script setup>
 import { Notify } from 'quasar'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 const leftDrawerOpen = ref(false)
 
 const { logout } = useAuthStore()
 
+const authStore = useAuthStore()
+
+const { userName } = storeToRefs(authStore)
+
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+onMounted(()=> {
+  console.log(userName.value)
+})
 
 function doLogout() {
   logout()

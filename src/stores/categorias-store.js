@@ -5,12 +5,12 @@ import { useQuasar } from "quasar";
 export const useCategoriasStore = defineStore('categorias', () => {
   const $q = useQuasar()
 
-  async function getCategorias() {
+  async function getCategorias(id) {
     $q.loading.show({
       message: 'Carregando categorias...'
     })
     try {
-      const { data } = await api.get('/category')
+      const { data } = await api.get(`/category/${id}/all`)
       $q.loading.hide()
       return data
     } catch (error) {
@@ -22,10 +22,15 @@ export const useCategoriasStore = defineStore('categorias', () => {
     }
   }
 
-  async function cadastrarCategoria(categoria) {
+  async function cadastrarCategoria(categoria, userId) {
+    const payload = {
+      ...categoria,
+      userId: userId
+    }
+
     try {
-      console.log("Dados sendo enviados:", categoria);
-      await api.post(`/category`, categoria)
+      console.log("Dados sendo enviados:", payload);
+      await api.post(`/category`, payload)
     } catch (error) {
       console.log('Error ao cadastrar categoria', error)
     }

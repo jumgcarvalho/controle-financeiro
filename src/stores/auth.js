@@ -6,6 +6,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('token') || null,
     userId: localStorage.getItem('userId') || null,
+    userName: localStorage.getItem('userName') || null,
     error: null,
   }),
 
@@ -17,8 +18,10 @@ export const useAuthStore = defineStore('auth', {
         const { data: dataLogin } = await api.post('/auth/login', { email, password })
         this.token = dataLogin.access_token
         this.userId = dataLogin.userId
+        this.userName = dataLogin.name
         localStorage.setItem('token', dataLogin.access_token)
         localStorage.setItem('userId', dataLogin.userId)
+        localStorage.setItem('userName', dataLogin.name)
         return dataLogin.access_token
       } catch (err) {
         this.error = err.response?.data?.message || err.message || 'Erro desconhecido'
@@ -54,6 +57,8 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('token')
       this.userId = null
       localStorage.removeItem('userId')
+      this.userName = null
+      localStorage.removeItem('userName')
     },
   },
 })
